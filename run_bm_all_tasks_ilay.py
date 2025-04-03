@@ -111,7 +111,11 @@ def plot_human_shading(
         ][col_group_2].values[0]
 
         ax.fill_between([-0.45, +0.45], group1_low, group1_high, color=color_group_1, alpha=0.2, label=label_group_1, zorder=100)
+        ax.plot([-0.45, 0.45], [group1_low, group1_low], color="darkred", linewidth=1.5, zorder=6)
+        ax.plot([-0.45, 0.45], [group1_high, group1_high], color="darkred", linewidth=1.5, zorder=6)
         ax.fill_between([0.55, 1.45], group2_low, group2_high, color=color_group_2, alpha=0.2, label=label_group_2, zorder=100)
+        ax.plot([0.55, 1.45], [group2_low, group2_low], color="darkred", linewidth=1.5, zorder=6)
+        ax.plot([0.55, 1.45], [group2_high, group2_high], color="darkred", linewidth=1.5, zorder=6)
 
     except IndexError:
         print(f"Warning: Could not find expected data for layers {layer_low} and {layer_high}.")
@@ -148,7 +152,7 @@ def generate_summary_plot(export_path):
 
 
         fig = plt.figure(figsize=(25, 12))
-        gs = fig.add_gridspec(3, 6, height_ratios=[1, 1, 0.8])  # 3 rows
+        gs = fig.add_gridspec(3, 5, height_ratios=[1, 1, 0.8])  # 3 rows
 
         # Row 1: 4 subplots
         ax0 = fig.add_subplot(gs[0, 0])  
@@ -199,8 +203,11 @@ def generate_summary_plot(export_path):
                 (human_df["Model Name"] == "Humans") &
                 (human_df["Layer Name"] == 100)
             ]["LFW: AUC"].values[0]
+            
 
-            axes[0].fill_between([-0.45, 1.45], group1_low, group1_high, color="red", alpha=0.2, label="LFW Human")
+            axes[0].fill_between([-0.45, 0.45], group1_low, group1_high, color="red", alpha=0.2, label="LFW Human")
+            axes[0].plot([-0.45, 0.45], [group1_low, group1_low], color="darkred", linewidth=1.5, zorder=6)
+            axes[0].plot([-0.45, 0.45], [group1_high, group1_high], color="darkred", linewidth=1.5, zorder=6)
             axes[0].set_xlim(-0.5, 0.5)
         except IndexError:
             print(f"Warning: Could not find expected data for layers {20} and {100}.")
