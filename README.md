@@ -35,10 +35,9 @@ Welcome to the **Face Recognition Benchmarking Tool**! This project is designed 
 The Face Recognition Benchmarking Tool simplifies the process of experimenting with different facial recognition models and tasks. By providing abstract base classes and utilities, it enables researchers to:
 
 - Easily integrate new models and tasks.
-- Run multiple models across various tasks simultaneously.
-- Compute distances and metrics efficiently.
 - Benchmark and compare model performances on face-related tasks.
 - Generate insightful plots for analysis.
+
 
 ## Features
 
@@ -48,6 +47,8 @@ The Face Recognition Benchmarking Tool simplifies the process of experimenting w
 - **Multi-Model Execution**: Execute multiple models across different tasks seamlessly.
 - **Customizable**: Users can implement their own models and tasks by extending the base classes.
 - **Plotting Utilities**: Built-in support for generating insightful plots for analysis.
+- **Model ID**: Compute and display results for all tasks on a specific model.
+- **Model Comperison**: Generate comparison plots to analyze performance across multiple models.
 
 ## Architecture
 
@@ -77,6 +78,10 @@ The following models have been implemented by extending `BaseModel`:
 1. **Vgg16Model**: Uses the VGG16 architecture.
 2. **DinoModel**: Utilizes the DINO Transformer-based model.
 3. **CLIPModel**: Incorporates the CLIP model for image embeddings.
+4. **ReSNetModel**: Employs the ResNet architecture, known for its deep residual learning capabilities.
+5. **IResNetModel**: Leverages an improved ResNet variant commonly used in face recognition tasks.
+6. **SimCLRModel**: Uses SimCLR for self-supervised contrastive learning of visual representations.
+7. **faceNetModel**: Implements FaceNet for high-accuracy face embedding and similarity comparison.
 
 #### Extending BaseModel
 
@@ -306,8 +311,8 @@ To get started with the Face Recognition Benchmarking Tool, follow these steps:
 1. **Clone the Repository**
 
    ```bash
-   git clone https://github.com/your-username/face-recognition-benchmarking-tool.git
-   cd face-recognition-benchmarking-tool
+   git clone https://github.com/your-username/benchmark2025.git
+   cd benchmark2025
    ```
 
 2. **Install Dependencies**
@@ -405,9 +410,33 @@ Here's a brief overview of the main directories:
   - `baseModel.py`
   - `baseTask.py`
   - `multiModelTaskManager.py`
+- **visualization** : Contains visualization files used by the runners, and comperison file.
+  - `visualization/visualization_for_multi_comper.py` 
 - **benchmark_runner.py**: Project implementation and usage example..
+- **run_benchmark.py**: Runs models on wanted tasks.
+- **run_benchmark_id.py**: Runs all tasks on specific model.
 
 ### Usage
+
+### run_benchmark.py
+This program takes a task, a list of models, and an export path as input. For each model, it runs the specified task and generates individual results. The main output is a comprehensive comparison of all models on the same task, enabling insightful performance analysis.
+command to run the benchmark - python3 run_benchmark.py --task View_Invariant --models VGG16 RESNET DINO CLIP --export-path benchmark_view_inv
+
+## run_benchmark_id.py
+This program takes a single model and runs all available tasks on it. Users can optionally specify the model path, export path, layers to extract, and a custom model name for flexible benchmarking and analysis.
+Additionally, it can incorporate human results into the output—simply add your data to the human_behavior_filled_rounded.csv file.
+
+## Example: running commands
+VGG16 | No weights | Default layers
+python3 run_benchmark_id.py --architecture VGG16
+IRESNET | ArcFace weights | Default layer ("fc")
+python3 run_benchmark_id.py --architecture IRESNET100 --model-name arcface --model-path ./weights/arcface/ms1mv3_arcface_r100.pth --layers-to-extract fc
+
+## visualization/visualization_for_multi_comper.py
+If you've already generated ID results for your favorite models, this program allows you to easily compare them. It takes CSV result paths, selected tasks, and an export path, and generates single-task comparison plots based on existing outputs.
+command to run the comperison - python3 visualization_for_multi_comper.py --csv-paths (wanted paths) --tasks "IL Celebs" "International Celebs" "Critical Features"  --export-path ./visualizations
+
+
 
 #### Example: Running Experiments
 
@@ -1095,6 +1124,5 @@ The results are organized in a structured manner within the specified output dir
 
 For questions or support, please open an issue or contact:
 
-Omri Amit, [omriamit@mail.tau.ac.il](mailto:omriamit@mail.tau.ac.il)
+Nitzan Guy, [guynitzan@gmail.com](mailto:guynitzan@gmail.com)
 
-Mia Shlein, [miachaias@mail.tau.ac.il](mailto:miachaias@mail.tau.ac.il)
