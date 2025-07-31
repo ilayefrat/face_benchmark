@@ -1,8 +1,0 @@
-command to run in order to run scripts:
-run in the (miniconda3)
-bash
-conda activate benchmark_env1
-
-than run your wanted command :)
-
-/home/new_storage/experiments/ng_benchmark/tests_datasets

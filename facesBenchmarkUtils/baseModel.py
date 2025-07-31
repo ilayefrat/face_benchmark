@@ -62,7 +62,7 @@ class BaseModel(ABC):
             self.layers_to_extract = []
         self.weights_file_path = weights_file_path
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.num_identities = self._set_num_identities() if weights_file_path else None
+        self.num_identities = self._set_num_identities() if self.weights_file_path else None
         self.model = None
         self._build_model()
         if weights_file_path:
@@ -111,13 +111,15 @@ class BaseModel(ABC):
         int
             Number of identities in the model.
         """
-        checkpoint = torch.load(self.weights_file_path, map_location=self.device)
-        if 'state_dict' in checkpoint:
-            last_key = list(checkpoint['state_dict'].keys())[-1]
-            return checkpoint['state_dict'][last_key].shape[0]
+        checkpoint = torch.load(self.weights_file_path, map_location='cpu')
+        if "state_dict" in checkpoint:
+            checkpoint = checkpoint["state_dict"]
+        last_key = list(checkpoint.keys())[-1]
+        shape = checkpoint[last_key].shape
+        if len(shape) == 2:
+            return shape[0]  # classifier weights [C, D]
         else:
-            last_key = list(checkpoint.keys())[-1]
-            return checkpoint[last_key].shape[0]
+            return None  # ArcFace-style embedding-only model
 
     def _load_model(self) -> None:
         """
@@ -229,7 +231,13 @@ class BaseModel(ABC):
                         out = out[0]
                     outputs[layer_name] = out.detach().cpu().reshape(out.size(0), -1)
             else:
-                outputs = {'default': output.detach().cpu().reshape(output.size(0), -1)}
+                if isinstance(output, dict):
+                    outputs = {
+                        k: v.detach().cpu().reshape(v.size(0), -1)
+                        for k, v in output.items()
+                    }
+                else:
+                    outputs = {'default': output.detach().cpu().reshape(output.size(0), -1)}
             return outputs
 
     def to(self) -> None:

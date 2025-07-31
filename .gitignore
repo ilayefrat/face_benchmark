@@ -1,8 +1,28 @@
+# Ignore everything in tests_datasets
 tests_datasets/
+
+# Ignore cache and system files
 __pycache__/
 FacesBenchmarkUtils/.DS_Store
 FacesBenchmarkUtils/__pycache__/
+
+# Ignore results and preview files
 results/
-*.csv
 preview_file.py
 preview_results/
+
+# Ignore everything in tests_data
+tests_data/**
+
+# Allow folder structure so Git can track files inside
+!tests_data/
+!tests_data/**/
+!tests_data/critical_features/
+!tests_data/critical_features/images/
+
+# Allow only .csv and .txt files inside tests_data
+!tests_data/**/*.csv
+!tests_data/**/*.txt
+
+# Temporary folders
+temp_lfw_selected/
